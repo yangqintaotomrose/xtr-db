@@ -1,6 +1,6 @@
 xtr-db框架 继承自hutool框架，重写了全局db事物
 主流思想是简单建议将所有业务写在controller层，统一使用弱对象存储，Idata,和Idataset
-1.x单层架构 逆主流java框架,没有那多多的分层强调的是业务。
+1.x单层架构 逆主流java框架,没有那多的分层,强调的是业务,简单，通用，直接。
 基于springboot 项目只有一个controller 层，数据持久化使用hutooldb
 这是一个基于Spring Boot和Hutool数据库操作框架的Java项目，主要特点如下：
 1. 项目结构
