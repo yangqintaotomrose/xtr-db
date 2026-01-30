@@ -1,5 +1,8 @@
 import com.xtr.framework.hutool.BaseDao;
+import com.xtr.framework.hutool.IData;
 import com.xtr.framework.hutool.IDataset;
+
+import java.util.List;
 
 /**
  * @Classname TestDao
@@ -9,22 +12,29 @@ import com.xtr.framework.hutool.IDataset;
  */
 public class TestDao {
     public static void main(String[] args) throws Exception {
-        //测试多数据源连接 默认mysql 5.7 udap库为主库
-        BaseDao dao2 = new BaseDao("");
-       // IData aaa2 = dao2.queryByFirst("select * from h_biz_service_method");
-       // IData hasUser = dao2.queryByFirst("select * from user_4a where user_id = ?","12");
-       //  IData hasUser  = new IData();
-       //  System.out.println(hasUser);
-       //  hasUser.setTableName("user_4a");
-       //  hasUser.set("id",2);
-       //  hasUser.set("update_time", dao2.getSysTimeLocal());
-       //  dao2.updateById(hasUser);
-       //  //System.out.println(dao2.getSysTimeLocal());
+        IDataset list = new IDataset();
 
-        dao2.getSysTime();
-        IDataset list = dao2.queryList("select * from ims_sys_org");
-        System.out.println(list);
-        dao2.commit();
+        list.add(new IData().set("a","111"));
+        list.set(0,"222");
+        List<IData>   bb = list.toList();
+        System.out.println(bb);
+        System.out.println(bb.get(0));
+        //测试多数据源连接 默认mysql 5.7 udap库为主库
+       //  BaseDao dao2 = new BaseDao("");
+       // // IData aaa2 = dao2.queryByFirst("select * from h_biz_service_method");
+       // // IData hasUser = dao2.queryByFirst("select * from user_4a where user_id = ?","12");
+       // //  IData hasUser  = new IData();
+       // //  System.out.println(hasUser);
+       // //  hasUser.setTableName("user_4a");
+       // //  hasUser.set("id",2);
+       // //  hasUser.set("update_time", dao2.getSysTimeLocal());
+       // //  dao2.updateById(hasUser);
+       // //  //System.out.println(dao2.getSysTimeLocal());
+       //
+       //  dao2.getSysTime();
+       //  IDataset list = dao2.queryList("select * from ims_sys_org");
+       //  System.out.println(list);
+       //  dao2.commit();
 //        BaseDao dao = new BaseDao("");
 //        //IDataset list = dao.queryList("SELECT * FROM [192.168.80.19].mySHOPHQStock.dbo.shop");
 //

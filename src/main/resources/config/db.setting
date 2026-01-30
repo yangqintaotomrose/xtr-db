@@ -1,8 +1,8 @@
 # 默认数据源为mysql   postgres/Acd!gddl@#1356
 url = jdbc:postgresql://127.0.0.1:5434/postgres
-user = postgres
-pass = Acd!gddl@#1356
-driver = org.postgresql.Driver
+user = root
+pass = 123456
+driver = com.mysql.cj.jdbc.Driver
 
 showSql = true
 formatSql = true

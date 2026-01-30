@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -319,42 +320,37 @@ public class ChangeBean {
             if (a_o instanceof String) {
                 String aO = (String) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof Double) {
+            }else if (a_o instanceof Double) {
                 Double aO = (Double) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof Integer) {
+            }else if (a_o instanceof Integer) {
                 Integer aO = (Integer) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof Float) {
+            }else if (a_o instanceof Float) {
                 Float aO = (Float) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof BigDecimal) {
+            }else if (a_o instanceof BigDecimal) {
                 BigDecimal aO = (BigDecimal) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof Boolean) {
+            }else if (a_o instanceof Boolean) {
                 Boolean aO = (Boolean) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof Long) {
+            }else if (a_o instanceof Long) {
                 Long aO = (Long) a_o;
                 re.set(_a,aO);
-            }
-            if (a_o instanceof Date) {
+            }else if (a_o instanceof Timestamp) {
+                Timestamp aO = (Timestamp) a_o;
+                //日期类型全部转换成String
+                re.set(_a, DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss",aO));
+            }else if (a_o instanceof Date) {
                 Date aO = (Date) a_o;
                 //日期类型全部转换成String
                 re.set(_a, DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss",aO));
-            }
-            if (a_o instanceof JSONObject) {
+            }else if (a_o instanceof JSONObject) {
                 JSONObject aO = (JSONObject) a_o;
                 re.set(_a,parseIDataFromJSONObject(aO,isTf));
 
-            }
-            if (a_o instanceof JSONArray) {
+            }else if (a_o instanceof JSONArray) {
                 JSONArray aO = (JSONArray) a_o;
                 re.set(_a,parseIDatasetFromJSONArray(aO,isTf));
             }

@@ -57,5 +57,13 @@ public class IDataset extends PageResult {
         List<IData> list = JSONArray.parseArray(jsonString,IData.class);
         super.addAll(list);
     }
+    /**
+     * 转换为List<IData>
+     * @return List<IData>
+     */
+    public List<IData> toList() {
+        return (List<IData>) this;
+    }
+
 
 }
