@@ -83,6 +83,9 @@ public class ChangeBean {
     public static IData db_vo(IData db){
         return ChangeBean.parseIDataCamelize(JSON.toJSONString(db));
     }
+    public static IData db_web(IData db){
+        return ChangeBean.parseIData(JSON.toJSONString(db));
+    }
     //驼峰式转换为非驼峰
     public static IData vo_db(IData vo){
         return ChangeBean.parseIDataDecamelize(JSON.toJSONString(vo));
@@ -95,6 +98,14 @@ public class ChangeBean {
         }
         return a;
     }
+    //转换成前端可直接使用的对象,统一处理date,datatime转换成字符串
+    public static IDataset dbs_web(IDataset db){
+        IDataset a = new IDataset();
+        for (int i = 0; i < db.size(); i++) {
+            a.add(ChangeBean.parseIData(JSON.toJSONString(db.getData(i))));
+        }
+        return a;
+    }
     //驼峰式转换为非驼峰
     public static IDataset vos_dbs(IDataset vo){
         IDataset a = new IDataset();
@@ -103,8 +114,6 @@ public class ChangeBean {
         }
         return a;
     }
-
-
 
     //非驼峰转换
     public static IData parseIData(String str){
