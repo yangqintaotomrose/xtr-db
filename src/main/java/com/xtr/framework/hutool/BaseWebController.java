@@ -21,7 +21,7 @@ import java.util.Enumeration;
  * @Classname BaseHutoolController
  * @Description
  * @Date 2025/1/6 17:27
- * @Created by yangqintao
+ * @Created by xtr-framework
  */
 public class BaseWebController {
     public IData getLoginUser(HttpServletRequest request)
@@ -30,7 +30,7 @@ public class BaseWebController {
 //        String token = request.getHeader("mail_token");
 //        //解密
 //        String user_id = DESTool.decryptDES(token).split("_")[0];
-        return BaseDao.getDao("").queryByFirst("select * from mgmt20.sm_user where user_id=?","10000");
+        return BaseDao.getDao("").queryByFirst("select * from xxx.system_user where user_id=?","10000");
     }
 
     public IData getRequestParam() {

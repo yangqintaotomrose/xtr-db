@@ -23,7 +23,7 @@ import java.util.Date;
 /**
  * web层通用数据处理
  *
- * @author hougt
+ * @author xtr-framework
  */
 public class BaseController
 {

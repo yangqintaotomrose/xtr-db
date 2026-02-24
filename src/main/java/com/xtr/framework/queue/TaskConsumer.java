@@ -50,8 +50,8 @@ public class TaskConsumer extends Thread {
             {
                 case "sale":
                     IData shop = task.getTaskInfo();
-                    IData shopInfo = dao.queryByFirst("select * from huijia.shop where id='"+shop.getString("shopid")+"'");
-                    IData sale = sqlserver.queryByFirst("EXEC ["+shop.getString("ip")+"].mySHOPSHStock.dbo.up_GetDaySaleGross '"+currentDate+"','"+shop.getString("shopid")+"','','"+currentDate+"'");
+                    IData shopInfo = dao.queryByFirst("select * from xxx.shop where id='"+shop.getString("shopid")+"'");
+                    IData sale = sqlserver.queryByFirst("EXEC ["+shop.getString("ip")+"].xxx.dbo.up_GetDaySaleGross '"+currentDate+"','"+shop.getString("shopid")+"','','"+currentDate+"'");
                     if(sale == null)
                     {
                         break;
@@ -59,9 +59,9 @@ public class TaskConsumer extends Thread {
                     sale.set("stat_date", currentDate);
                     sale.set("shop_name", shopInfo==null?"":shopInfo.getString("name"));
                     sale.set("create_time", DateUtil.formatDateTime(DateUtil.date()));
-                    sale.setTableName("huijia.day_sale");
+                    sale.setTableName("xxx.sale_record");
                     //查询历史表有没有当天的记录 有就更新没有就插入
-                    IData saleHis = dao.queryByFirst("select * from huijia.day_sale where stat_date='"+currentDate+"' and shopid='"+shop.getString("shopid")+"' and avgsalevalue="+sale.getBigDecimal("avgsalevalue"));
+                    IData saleHis = dao.queryByFirst("select * from xxx.sale_record where stat_date='"+currentDate+"' and shopid='"+shop.getString("shopid")+"' and avgsalevalue="+sale.getBigDecimal("avgsalevalue"));
                     if(saleHis == null)
                     {
                         dao.insert(sale);

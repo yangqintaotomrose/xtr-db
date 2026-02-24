@@ -4,7 +4,7 @@ package com.xtr.framework.hutool;
  * @Classname BaseDao
  * @Description
  * @Date 2022/6/25 08:54
- * @Created by yangqintao
+ * @Created by xtr-framework
  */
 
 import cn.hutool.db.Entity;

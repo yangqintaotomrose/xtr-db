@@ -28,6 +28,7 @@
         <fastjson.version>1.2.78</fastjson.version>
         <hutool.version>5.8.10</hutool.version>
         <postgresql.version>42.7.3</postgresql.version>
+        <mysql.version>8.0.33</mysql.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     </properties>
 
@@ -135,6 +136,14 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
+            <optional>true</optional><!-- 不传递依赖 -->
+        </dependency>
+
+        <!-- MySQL JDBC 驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
             <optional>true</optional><!-- 不传递依赖 -->
         </dependency>
 

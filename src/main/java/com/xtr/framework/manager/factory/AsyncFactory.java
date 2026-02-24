@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 异步工厂（产生任务用）
  *
- * @author liuhulu
+ * @author xtr-framework
  *
  */
 public class AsyncFactory

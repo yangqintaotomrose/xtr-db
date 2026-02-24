@@ -14,7 +14,7 @@ import java.util.GregorianCalendar;
 /**
  * 时间工具类
  *
- * @author hougt
+ * @author xtr-framework
  */
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 {

@@ -8,7 +8,7 @@ import javax.crypto.spec.DESKeySpec;
 import java.security.SecureRandom;
 
 public class EncryptUtil {
-    private static final String PASSWORD_CRYPT_KEY = "__nlbi__";
+    private static final String PASSWORD_CRYPT_KEY = "__xtr__";
 
     private final static String DES = "DES";
 

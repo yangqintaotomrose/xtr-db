@@ -4,7 +4,7 @@ package com.xtr.framework.hutool;
  * @Classname Pagination
  * @Description
  * @Date 2022/6/28 11:01
- * @Created by yangqintao
+ * @Created by xtr-framework
  */
 public class Pagination {
     public static final int MAX_PAGE_SIZE = 500;

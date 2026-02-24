@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * @Classname ChangeBean
  * @Description
  * @Date 2022/11/23 15:56
- * @Created by yangqintao
+ * @Created by xtr-framework
  */
 public class ChangeBean {
     public static IData getIDataByGroup(String group_name, IData source) {

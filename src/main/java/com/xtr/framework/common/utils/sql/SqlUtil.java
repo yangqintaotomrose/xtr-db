@@ -6,7 +6,7 @@ import com.xtr.framework.common.utils.StringUtils;
 /**
  * sql操作工具类
  *
- * @author hougt
+ * @author xtr-framework
  */
 public class SqlUtil
 {

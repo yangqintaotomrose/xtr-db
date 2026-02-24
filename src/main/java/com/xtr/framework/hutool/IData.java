@@ -11,7 +11,7 @@ import java.util.Map;
  * @Classname IData
  * @Description
  * @Date 2022/6/23 23:01
- * @Created by yangqintao
+ * @Created by xtr-framework
  */
 public class IData extends Entity {
 

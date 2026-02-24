@@ -23,7 +23,7 @@ import java.sql.SQLException;
  * 2 应用不报错提交事务，报错则回滚事务
  * 3 需要手动处理事务
  * @Date 2022/7/21 22:55
- * @Created by yangqintao
+ * @Created by xtr-framework
  */
 public class BaseDb extends AbstractDb {
 
