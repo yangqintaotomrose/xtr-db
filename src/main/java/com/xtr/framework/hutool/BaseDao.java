@@ -182,6 +182,55 @@ public class BaseDao {
     {
         return db.insert(list);
     }
+
+    //批量插入：指定表名，返回总影响行数
+    @SneakyThrows
+    public int insertBatch(String tableName, IDataset list)
+    {
+        if (list == null || list.isEmpty()) {
+            return 0;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            list.getData(i).setTableName(tableName);
+        }
+        int[] rows = db.insert(list);
+        int total = 0;
+        for (int r : rows) {
+            total += r;
+        }
+        return total;
+    }
+
+    //批量插入：分批提交，避免一次性插入数据量过大
+    @SneakyThrows
+    public int insertBatch(String tableName, IDataset list, int batchSize)
+    {
+        if (list == null || list.isEmpty()) {
+            return 0;
+        }
+        if (batchSize <= 0) {
+            batchSize = 500;
+        }
+        int total = 0;
+        IDataset chunk = new IDataset();
+        for (int i = 0; i < list.size(); i++) {
+            IData row = list.getData(i);
+            row.setTableName(tableName);
+            chunk.add(row);
+            if (chunk.size() >= batchSize) {
+                for (int r : db.insert(chunk)) {
+                    total += r;
+                }
+                chunk = new IDataset();
+            }
+        }
+        if (!chunk.isEmpty()) {
+            for (int r : db.insert(chunk)) {
+                total += r;
+            }
+        }
+        return total;
+    }
     //插入返回主键ID
     @SneakyThrows
     public long insertExt(IData data)
