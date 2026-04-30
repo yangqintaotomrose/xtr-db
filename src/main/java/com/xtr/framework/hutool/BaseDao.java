@@ -10,7 +10,6 @@ package com.xtr.framework.hutool;
 import cn.hutool.db.Entity;
 import cn.hutool.db.Page;
 import cn.hutool.db.PageResult;
-import lombok.SneakyThrows;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +19,7 @@ import java.util.List;
 /**
  * 封装hutooldb ,简化数据持久化实现细节
  * 对外统一使用IData 和 IDataset 传输数据
+ * 内部捕获受检异常，统一抛出运行时异常
  */
 public class BaseDao {
 
@@ -64,127 +64,191 @@ public class BaseDao {
     }
 
     //查第一条
-    @SneakyThrows
     public IData queryByFirst(String sql)
     {
-        List<Entity> list = db.query(sql);
-        return list.size()==0?null:new IData(list.get(0));
+        try {
+            List<Entity> list = db.query(sql);
+            return list.size() == 0 ? null : new IData(list.get(0));
+        } catch (Exception e) {
+            throw new RuntimeException("queryByFirst执行失败: " + sql, e);
+        }
     }
 
-    @SneakyThrows
-    public IData queryByFirst(String sql,Object... params)
+    public IData queryByFirst(String sql, Object... params)
     {
-        List<Entity> list = db.query(sql,params);
-        return list.size()==0?null:new IData(list.get(0));
+        try {
+            List<Entity> list = db.query(sql, params);
+            return list.size() == 0 ? null : new IData(list.get(0));
+        } catch (Exception e) {
+            throw new RuntimeException("queryByFirst执行失败: " + sql, e);
+        }
     }
-    @SneakyThrows
-    public IData queryByFirst(String sql,IData params)
+
+    public IData queryByFirst(String sql, IData params)
     {
-        List<Entity> list = db.query(sql,params);
-        return list.size()==0?null:new IData(list.get(0));
+        try {
+            List<Entity> list = db.query(sql, params);
+            return list.size() == 0 ? null : new IData(list.get(0));
+        } catch (Exception e) {
+            throw new RuntimeException("queryByFirst执行失败: " + sql, e);
+        }
     }
 
     //查全部
-    @SneakyThrows
     public IDataset queryList(String sql, Object... params)
     {
-        List<Entity> list = db.query(sql,params);
-        return new IDataset(list);
+        try {
+            List<Entity> list = db.query(sql, params);
+            return new IDataset(list);
+        } catch (Exception e) {
+            throw new RuntimeException("queryList执行失败: " + sql, e);
+        }
     }
 
-    @SneakyThrows
-    public IDataset queryList(String sql,IData params)
+    public IDataset queryList(String sql, IData params)
     {
-        List<Entity> list = db.query(sql,params);
-        return new IDataset(list);
+        try {
+            List<Entity> list = db.query(sql, params);
+            return new IDataset(list);
+        } catch (Exception e) {
+            throw new RuntimeException("queryList执行失败: " + sql, e);
+        }
     }
-    @SneakyThrows
+
     public IDataset queryList(SQLParser parser, IData params)
     {
-        List<Entity> list = db.query(parser.getSQL(),params);
-        return new IDataset(list);
+        try {
+            List<Entity> list = db.query(parser.getSQL(), params);
+            return new IDataset(list);
+        } catch (Exception e) {
+            throw new RuntimeException("queryList执行失败: " + parser.getSQL(), e);
+        }
     }
-    @SneakyThrows
+
     public IDataset queryList(String sql)
     {
-        List<Entity> list = db.query(sql);
-        return new IDataset(list);
+        try {
+            List<Entity> list = db.query(sql);
+            return new IDataset(list);
+        } catch (Exception e) {
+            throw new RuntimeException("queryList执行失败: " + sql, e);
+        }
     }
+
     //查数据库时间
-    public String getSysTime() throws Exception
+    public String getSysTime()
     {
-        return db.queryString("select now() as now from dual");
+        try {
+            return db.queryString("select now() as now from dual");
+        } catch (Exception e) {
+            throw new RuntimeException("getSysTime执行失败", e);
+        }
     }
+
     //查本地服务器时间getSysTime
     public String getSysTimeLocal() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return localDateTime.format(dateTimeFormatter);
     }
+
     //查本地服务器日期
     public String getSysDateLocal() {
         LocalDateTime localDateTime = LocalDateTime.now();
         return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
+
     //分页查询
-    public IDataset queryPage(String sql, IData cond, Pagination page) throws Exception
+    public IDataset queryPage(String sql, IData cond, Pagination page)
     {
-        PageResult<Entity> list = db.page(sql, new Page(page.getCurrPage()-1, page.getSize()),cond);
-        return new IDataset(list);
+        try {
+            PageResult<Entity> list = db.page(sql, new Page(page.getCurrPage() - 1, page.getSize()), cond);
+            return new IDataset(list);
+        } catch (Exception e) {
+            throw new RuntimeException("queryPage执行失败: " + sql, e);
+        }
     }
 
-    @SneakyThrows
     public IDataset queryPage(SQLParser sql, IData cond, Pagination page)
     {
-        PageResult<Entity> list = db.page(sql.getSQL(), new Page(page.getCurrPage()-1, page.getSize()),cond);
-        return new IDataset(list);
-    }
-    //插入返回执行记录数据
-    @SneakyThrows
-    public int insert(IData data) throws Exception
-    {
-        return db.insert(data);
-    }
-    //传入表名称插入
-    @SneakyThrows
-    public int insert(String tableName,IData data) throws Exception
-    {
-        data.setTableName(tableName);
-        return db.insert(data);
-    }
-    @SneakyThrows
-    public int update(IData data,IData where)
-    {
-        return db.update(data,where);
+        try {
+            PageResult<Entity> list = db.page(sql.getSQL(), new Page(page.getCurrPage() - 1, page.getSize()), cond);
+            return new IDataset(list);
+        } catch (Exception e) {
+            throw new RuntimeException("queryPage执行失败: " + sql.getSQL(), e);
+        }
     }
 
-    @SneakyThrows
+    //插入返回执行记录数据
+    public int insert(IData data)
+    {
+        try {
+            return db.insert(data);
+        } catch (Exception e) {
+            throw new RuntimeException("insert执行失败: " + data.getTableName(), e);
+        }
+    }
+
+    //传入表名称插入
+    public int insert(String tableName, IData data)
+    {
+        data.setTableName(tableName);
+        try {
+            return db.insert(data);
+        } catch (Exception e) {
+            throw new RuntimeException("insert执行失败: " + tableName, e);
+        }
+    }
+
+    public int update(IData data, IData where)
+    {
+        try {
+            return db.update(data, where);
+        } catch (Exception e) {
+            throw new RuntimeException("update执行失败: " + data.getTableName(), e);
+        }
+    }
+
     public int delete(String tableName, String field, Object value)
     {
-        return db.del(tableName,field,value);
+        try {
+            return db.del(tableName, field, value);
+        } catch (Exception e) {
+            throw new RuntimeException("delete执行失败: " + tableName, e);
+        }
     }
 
     //默认根据ID更新
-    @SneakyThrows
     public int updateById(IData data)
     {
-        //兼容pd的强类型，pd 在类型转化上没有mysql灵活
-        return db.update(data,new IData().set("id",data.getObj("id")));
+        try {
+            //兼容pd的强类型，pd 在类型转化上没有mysql灵活
+            return db.update(data, new IData().set("id", data.getObj("id")));
+        } catch (Exception e) {
+            throw new RuntimeException("updateById执行失败: " + data.getTableName(), e);
+        }
     }
-    @SneakyThrows
-    public int[] executeBatch(String... sqls) throws Exception
+
+    public int[] executeBatch(String... sqls)
     {
-        return db.executeBatch(sqls);
+        try {
+            return db.executeBatch(sqls);
+        } catch (Exception e) {
+            throw new RuntimeException("executeBatch执行失败", e);
+        }
     }
+
     //批量插入返回执行记录数据
-    @SneakyThrows
-    public int[] inserts(IDataset list) throws Exception
+    public int[] inserts(IDataset list)
     {
-        return db.insert(list);
+        try {
+            return db.insert(list);
+        } catch (Exception e) {
+            throw new RuntimeException("inserts执行失败", e);
+        }
     }
 
     //批量插入：指定表名，返回总影响行数
-    @SneakyThrows
     public int insertBatch(String tableName, IDataset list)
     {
         if (list == null || list.isEmpty()) {
@@ -193,16 +257,19 @@ public class BaseDao {
         for (int i = 0; i < list.size(); i++) {
             list.getData(i).setTableName(tableName);
         }
-        int[] rows = db.insert(list);
-        int total = 0;
-        for (int r : rows) {
-            total += r;
+        try {
+            int[] rows = db.insert(list);
+            int total = 0;
+            for (int r : rows) {
+                total += r;
+            }
+            return total;
+        } catch (Exception e) {
+            throw new RuntimeException("insertBatch执行失败: " + tableName, e);
         }
-        return total;
     }
 
     //批量插入：分批提交，避免一次性插入数据量过大
-    @SneakyThrows
     public int insertBatch(String tableName, IDataset list, int batchSize)
     {
         if (list == null || list.isEmpty()) {
@@ -213,51 +280,77 @@ public class BaseDao {
         }
         int total = 0;
         IDataset chunk = new IDataset();
-        for (int i = 0; i < list.size(); i++) {
-            IData row = list.getData(i);
-            row.setTableName(tableName);
-            chunk.add(row);
-            if (chunk.size() >= batchSize) {
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                IData row = list.getData(i);
+                row.setTableName(tableName);
+                chunk.add(row);
+                if (chunk.size() >= batchSize) {
+                    for (int r : db.insert(chunk)) {
+                        total += r;
+                    }
+                    chunk = new IDataset();
+                }
+            }
+            if (!chunk.isEmpty()) {
                 for (int r : db.insert(chunk)) {
                     total += r;
                 }
-                chunk = new IDataset();
             }
+            return total;
+        } catch (Exception e) {
+            throw new RuntimeException("insertBatch执行失败: " + tableName, e);
         }
-        if (!chunk.isEmpty()) {
-            for (int r : db.insert(chunk)) {
-                total += r;
-            }
-        }
-        return total;
     }
+
     //插入返回主键ID
-    @SneakyThrows
     public long insertExt(IData data)
     {
-        return db.insertForGeneratedKey(data);
+        try {
+            return db.insertForGeneratedKey(data);
+        } catch (Exception e) {
+            throw new RuntimeException("insertExt执行失败: " + data.getTableName(), e);
+        }
     }
+
     //执行SQL
-    @SneakyThrows
-    public int execSql( String sql,Object... param)
+    public int execSql(String sql, Object... param)
     {
-        return db.execute(sql, param);
+        try {
+            return db.execute(sql, param);
+        } catch (Exception e) {
+            throw new RuntimeException("execSql执行失败: " + sql, e);
+        }
     }
 
     //无错就，提交事务
-    public void commit() throws Exception
+    public void commit()
     {
-        db.commit();
+        try {
+            db.commit();
+        } catch (Exception e) {
+            throw new RuntimeException("commit执行失败", e);
+        }
     }
+
     //有错就，回滚事务
-    public void rollback() throws Exception
+    public void rollback()
     {
-        db.rollback();
+        try {
+            db.rollback();
+        } catch (Exception e) {
+            throw new RuntimeException("rollback执行失败", e);
+        }
     }
+
     //结束
-    public void end() throws Exception
+    public void end()
     {
-        db.end();
+        try {
+            db.end();
+        } catch (Exception e) {
+            throw new RuntimeException("end执行失败", e);
+        }
     }
 
     public static ThreadLocal<HashMap<String,BaseDao>> getThreadLocal(){
