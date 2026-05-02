@@ -217,11 +217,20 @@ public class BaseDao {
             throw new RuntimeException("delete执行失败: " + tableName, e);
         }
     }
-
-    //默认根据ID更新
     public int updateById(IData data)
     {
         try {
+            //兼容pd的强类型，pd 在类型转化上没有mysql灵活
+            return db.update(data, new IData().set("id", data.getObj("id")));
+        } catch (Exception e) {
+            throw new RuntimeException("updateById执行失败: " + data.getTableName(), e);
+        }
+    }
+    //默认根据ID更新
+    public int updateById(String tableName,IData data)
+    {
+        try {
+            data.setTableName(tableName);
             //兼容pd的强类型，pd 在类型转化上没有mysql灵活
             return db.update(data, new IData().set("id", data.getObj("id")));
         } catch (Exception e) {
