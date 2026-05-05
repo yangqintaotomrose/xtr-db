@@ -10,11 +10,12 @@ package com.xtr.framework.hutool;
 import cn.hutool.db.Entity;
 import cn.hutool.db.Page;
 import cn.hutool.db.PageResult;
+import cn.hutool.db.meta.MetaUtil;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 封装hutooldb ,简化数据持久化实现细节
@@ -27,6 +28,9 @@ public class BaseDao {
     private static ThreadLocal<HashMap<String,BaseDao>> threadLocal = new ThreadLocal();
 
     private BaseDb db = null;//封装db
+
+    //每个BaseDao实例缓存自己数据源下的表列名（小写），避免每次都查元数据
+    private final ConcurrentHashMap<String, Set<String>> tableColumnsCache = new ConcurrentHashMap<>();
 
     /**
      * 创建和关闭 都需要手工处理
@@ -309,6 +313,93 @@ public class BaseDao {
             return total;
         } catch (Exception e) {
             throw new RuntimeException("insertBatch执行失败: " + tableName, e);
+        }
+    }
+
+    /**
+     * 获取表的列名集合（小写形式，用于不区分大小写匹配）
+     */
+    private Set<String> getTableColumns(String tableName)
+    {
+        return tableColumnsCache.computeIfAbsent(tableName, t -> {
+            try {
+                List<String> cols = Arrays.asList(MetaUtil.getColumnNames(db.getDs(), t));
+                if (cols == null || cols.isEmpty()) {
+                    throw new RuntimeException("未获取到表的列元数据: " + t);
+                }
+                Set<String> set = new HashSet<>(cols.size() * 2);
+                for (String c : cols) {
+                    set.add(c.toLowerCase());
+                }
+                return set;
+            } catch (RuntimeException re) {
+                throw re;
+            } catch (Exception e) {
+                throw new RuntimeException("获取表元数据失败: " + t, e);
+            }
+        });
+    }
+
+    /**
+     * 按表元数据过滤IData，剔除不存在的列
+     */
+    private IData filterByExistField(String tableName, IData data)
+    {
+        if (data == null) {
+            return null;
+        }
+        Set<String> cols = getTableColumns(tableName);
+        IData filtered = new IData();
+        filtered.setTableName(tableName);
+        for (String key : data.keySet()) {
+            if (key != null && cols.contains(key.toLowerCase())) {
+                filtered.set(key, data.get(key));
+            }
+        }
+        return filtered;
+    }
+
+    /**
+     * 按表元数据过滤后插入：自动剔除IData中不属于表字段的属性
+     */
+    public int insertByExistField(String tableName, IData data)
+    {
+        if (data == null) {
+            return 0;
+        }
+        IData filtered = filterByExistField(tableName, data);
+        if (filtered.isEmpty()) {
+            throw new RuntimeException("insertByExistField执行失败: 过滤后无有效字段, table=" + tableName);
+        }
+        try {
+            return db.insert(filtered);
+        } catch (Exception e) {
+            throw new RuntimeException("insertByExistField执行失败: " + tableName, e);
+        }
+    }
+
+    /**
+     * 按表元数据过滤后按id更新：自动剔除IData中不属于表字段的属性
+     */
+    public int updateByIdExistField(String tableName, IData data)
+    {
+        if (data == null) {
+            return 0;
+        }
+        Object id = data.getObj("id");
+        if (id == null) {
+            throw new RuntimeException("updateByIdExistField执行失败: 缺少id字段, table=" + tableName);
+        }
+        IData filtered = filterByExistField(tableName, data);
+        //更新内容不应包含id本身
+        filtered.remove("id");
+        if (filtered.isEmpty()) {
+            throw new RuntimeException("updateByIdExistField执行失败: 过滤后无可更新字段, table=" + tableName);
+        }
+        try {
+            return db.update(filtered, new IData().set("id", id));
+        } catch (Exception e) {
+            throw new RuntimeException("updateByIdExistField执行失败: " + tableName, e);
         }
     }
 

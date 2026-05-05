@@ -49,6 +49,12 @@ public class TestDao {
             // 6. 分页查询示例
             testPaginationQuery(dao);
 
+            // 7. 按表元数据过滤插入
+            testInsertByExistField(dao);
+
+            // 8. 按表元数据过滤按id更新
+            testUpdateByIdExistField(dao);
+
             System.out.println("=== 所有测试完成 ===");
 
         } catch (Exception e) {
@@ -211,6 +217,80 @@ public class TestDao {
             dao.rollback();
             System.out.println("事务已回滚: " + e.getMessage());
         }
+    }
+
+    /**
+     * 测试按表元数据过滤插入：故意混入不存在的列，验证会被剔除
+     */
+    private static void testInsertByExistField(BaseDao dao) throws Exception {
+        System.out.println("\n--- 测试 insertByExistField ---");
+
+        IData data = new IData();
+        // 表里实际存在的字段
+        data.set("username", "exist_field_" + System.currentTimeMillis());
+        data.set("email", "exist_field@example.com");
+        data.set("create_time", dao.getSysTimeLocal());
+        data.set("power_balance", 12.34);
+        // 表里不存在的字段，应被自动过滤掉
+        data.set("not_exist_col", "should_be_filtered");
+        data.set("anotherGhostField", 999);
+
+        int rows = dao.insertByExistField("test_table", data);
+        System.out.println("insertByExistField影响行数: " + rows);
+
+        IData inserted = dao.queryByFirst(
+                "SELECT * FROM test_table WHERE username = ?", data.get("username"));
+        System.out.println("插入后记录: " + inserted);
+        if (inserted == null) {
+            throw new RuntimeException("insertByExistField 失败: 未查询到记录");
+        }
+        // 元数据中不存在的字段不应进入数据库（如果库里没该列，原本也插不进去；这里主要验证不报错）
+        if (inserted.get("not_exist_col") != null) {
+            throw new RuntimeException("过滤失败：不应存在 not_exist_col");
+        }
+        System.out.println("insertByExistField 通过");
+    }
+
+    /**
+     * 测试按表元数据过滤按id更新：故意混入不存在的列
+     */
+    private static void testUpdateByIdExistField(BaseDao dao) throws Exception {
+        System.out.println("\n--- 测试 updateByIdExistField ---");
+
+        // 先插入一条用于更新
+        IData seed = new IData();
+        String username = "upd_exist_" + System.currentTimeMillis();
+        seed.set("username", username);
+        seed.set("email", "before_update@example.com");
+        seed.set("create_time", dao.getSysTimeLocal());
+        seed.setTableName("test_table");
+        dao.insert(seed);
+
+        IData record = dao.queryByFirst(
+                "SELECT * FROM test_table WHERE username = ?", username);
+        if (record == null) {
+            throw new RuntimeException("updateByIdExistField 准备数据失败");
+        }
+
+        IData update = new IData();
+        update.set("id", record.get("id"));
+        update.set("email", "after_update@example.com");
+        update.set("update_time", dao.getSysTimeLocal());
+        update.set("power_balance", 88.88);
+        // 不存在的列，应被自动过滤
+        update.set("ghost_col", "x");
+        update.set("nonexist_field", 123);
+
+        int rows = dao.updateByIdExistField("test_table", update);
+        System.out.println("updateByIdExistField影响行数: " + rows);
+
+        IData after = dao.queryByFirst(
+                "SELECT * FROM test_table WHERE id = ?", record.get("id"));
+        System.out.println("更新后记录: " + after);
+        if (after == null || !"after_update@example.com".equals(after.getStr("email"))) {
+            throw new RuntimeException("updateByIdExistField 校验失败");
+        }
+        System.out.println("updateByIdExistField 通过");
     }
 
     /**

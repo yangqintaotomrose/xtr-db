@@ -131,6 +131,14 @@ public class BaseDb extends AbstractDb {
     public BaseDb disableWrapper() {
         return (BaseDb)super.disableWrapper();
     }
+
+    /**
+     * 获取当前Db绑定的数据源
+     * @return DataSource
+     */
+    public DataSource getDs() {
+        return this.ds;
+    }
     // ---------------------------------------------------------------------------- Getters and Setters end
 
     @Override
