@@ -422,6 +422,18 @@ public class BaseDao {
             throw new RuntimeException("execSql执行失败: " + sql, e);
         }
     }
+    //功能execSql 一样 主要是兼容老项目
+    public int executeUpdate(String sql, Object... param)
+    {
+        try {
+            return db.execute(sql, param);
+        } catch (Exception e) {
+            throw new RuntimeException("execSql执行失败: " + sql, e);
+        }
+    }
+
+
+
 
     //无错就，提交事务
     public void commit()
