@@ -74,7 +74,7 @@ public class BaseDao {
             List<Entity> list = db.query(sql);
             return list.size() == 0 ? null : new IData(list.get(0));
         } catch (Exception e) {
-            throw new RuntimeException("queryByFirst执行失败: " + sql, e);
+            throw new RuntimeException("queryByFirst执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -84,7 +84,7 @@ public class BaseDao {
             List<Entity> list = db.query(sql, params);
             return list.size() == 0 ? null : new IData(list.get(0));
         } catch (Exception e) {
-            throw new RuntimeException("queryByFirst执行失败: " + sql, e);
+            throw new RuntimeException("queryByFirst执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -94,7 +94,7 @@ public class BaseDao {
             List<Entity> list = db.query(sql, params);
             return list.size() == 0 ? null : new IData(list.get(0));
         } catch (Exception e) {
-            throw new RuntimeException("queryByFirst执行失败: " + sql, e);
+            throw new RuntimeException("queryByFirst执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -105,7 +105,7 @@ public class BaseDao {
             List<Entity> list = db.query(sql, params);
             return new IDataset(list);
         } catch (Exception e) {
-            throw new RuntimeException("queryList执行失败: " + sql, e);
+            throw new RuntimeException("queryList执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -115,7 +115,7 @@ public class BaseDao {
             List<Entity> list = db.query(sql, params);
             return new IDataset(list);
         } catch (Exception e) {
-            throw new RuntimeException("queryList执行失败: " + sql, e);
+            throw new RuntimeException("queryList执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -125,7 +125,7 @@ public class BaseDao {
             List<Entity> list = db.query(parser.getSQL(), params);
             return new IDataset(list);
         } catch (Exception e) {
-            throw new RuntimeException("queryList执行失败: " + parser.getSQL(), e);
+            throw new RuntimeException("queryList执行失败: " + parser.getSQL() + " | " + e.getMessage(), e);
         }
     }
 
@@ -135,7 +135,7 @@ public class BaseDao {
             List<Entity> list = db.query(sql);
             return new IDataset(list);
         } catch (Exception e) {
-            throw new RuntimeException("queryList执行失败: " + sql, e);
+            throw new RuntimeException("queryList执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -145,7 +145,7 @@ public class BaseDao {
         try {
             return db.queryString("select now() as now from dual");
         } catch (Exception e) {
-            throw new RuntimeException("getSysTime执行失败", e);
+            throw new RuntimeException("getSysTime执行失败: " + e.getMessage(), e);
         }
     }
 
@@ -169,7 +169,7 @@ public class BaseDao {
             PageResult<Entity> list = db.page(sql, new Page(page.getCurrPage() - 1, page.getSize()), cond);
             return new IDataset(list);
         } catch (Exception e) {
-            throw new RuntimeException("queryPage执行失败: " + sql, e);
+            throw new RuntimeException("queryPage执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -179,7 +179,7 @@ public class BaseDao {
             PageResult<Entity> list = db.page(sql.getSQL(), new Page(page.getCurrPage() - 1, page.getSize()), cond);
             return new IDataset(list);
         } catch (Exception e) {
-            throw new RuntimeException("queryPage执行失败: " + sql.getSQL(), e);
+            throw new RuntimeException("queryPage执行失败: " + sql.getSQL() + " | " + e.getMessage(), e);
         }
     }
 
@@ -189,7 +189,7 @@ public class BaseDao {
         try {
             return db.insert(data);
         } catch (Exception e) {
-            throw new RuntimeException("insert执行失败: " + data.getTableName(), e);
+            throw new RuntimeException("insert执行失败: " + data.getTableName() + " | " + e.getMessage(), e);
         }
     }
 
@@ -200,7 +200,7 @@ public class BaseDao {
         try {
             return db.insert(data);
         } catch (Exception e) {
-            throw new RuntimeException("insert执行失败: " + tableName, e);
+            throw new RuntimeException("insert执行失败: " + tableName + " | " + e.getMessage(), e);
         }
     }
 
@@ -209,7 +209,7 @@ public class BaseDao {
         try {
             return db.update(data, where);
         } catch (Exception e) {
-            throw new RuntimeException("update执行失败: " + data.getTableName(), e);
+            throw new RuntimeException("update执行失败: " + data.getTableName() + " | " + e.getMessage(), e);
         }
     }
 
@@ -218,7 +218,7 @@ public class BaseDao {
         try {
             return db.del(tableName, field, value);
         } catch (Exception e) {
-            throw new RuntimeException("delete执行失败: " + tableName, e);
+            throw new RuntimeException("delete执行失败: " + tableName + " | " + e.getMessage(), e);
         }
     }
     public int updateById(IData data)
@@ -227,7 +227,7 @@ public class BaseDao {
             //兼容pd的强类型，pd 在类型转化上没有mysql灵活
             return db.update(data, new IData().set("id", data.getObj("id")));
         } catch (Exception e) {
-            throw new RuntimeException("updateById执行失败: " + data.getTableName(), e);
+            throw new RuntimeException("updateById执行失败: " + data.getTableName() + " | " + e.getMessage(), e);
         }
     }
     //默认根据ID更新
@@ -238,7 +238,7 @@ public class BaseDao {
             //兼容pd的强类型，pd 在类型转化上没有mysql灵活
             return db.update(data, new IData().set("id", data.getObj("id")));
         } catch (Exception e) {
-            throw new RuntimeException("updateById执行失败: " + data.getTableName(), e);
+            throw new RuntimeException("updateById执行失败: " + data.getTableName() + " | " + e.getMessage(), e);
         }
     }
 
@@ -247,7 +247,7 @@ public class BaseDao {
         try {
             return db.executeBatch(sqls);
         } catch (Exception e) {
-            throw new RuntimeException("executeBatch执行失败", e);
+            throw new RuntimeException("executeBatch执行失败: " + e.getMessage(), e);
         }
     }
 
@@ -257,7 +257,7 @@ public class BaseDao {
         try {
             return db.insert(list);
         } catch (Exception e) {
-            throw new RuntimeException("inserts执行失败", e);
+            throw new RuntimeException("inserts执行失败: " + e.getMessage(), e);
         }
     }
 
@@ -278,7 +278,7 @@ public class BaseDao {
             }
             return total;
         } catch (Exception e) {
-            throw new RuntimeException("insertBatch执行失败: " + tableName, e);
+            throw new RuntimeException("insertBatch执行失败: " + tableName + " | " + e.getMessage(), e);
         }
     }
 
@@ -312,7 +312,7 @@ public class BaseDao {
             }
             return total;
         } catch (Exception e) {
-            throw new RuntimeException("insertBatch执行失败: " + tableName, e);
+            throw new RuntimeException("insertBatch执行失败: " + tableName + " | " + e.getMessage(), e);
         }
     }
 
@@ -335,7 +335,7 @@ public class BaseDao {
             } catch (RuntimeException re) {
                 throw re;
             } catch (Exception e) {
-                throw new RuntimeException("获取表元数据失败: " + t, e);
+                throw new RuntimeException("获取表元数据失败: " + t + " | " + e.getMessage(), e);
             }
         });
     }
@@ -374,7 +374,7 @@ public class BaseDao {
         try {
             return db.insert(filtered);
         } catch (Exception e) {
-            throw new RuntimeException("insertByExistField执行失败: " + tableName, e);
+            throw new RuntimeException("insertByExistField执行失败: " + tableName + " | " + e.getMessage(), e);
         }
     }
 
@@ -399,7 +399,7 @@ public class BaseDao {
         try {
             return db.update(filtered, new IData().set("id", id));
         } catch (Exception e) {
-            throw new RuntimeException("updateByIdExistField执行失败: " + tableName, e);
+            throw new RuntimeException("updateByIdExistField执行失败: " + tableName + " | " + e.getMessage(), e);
         }
     }
 
@@ -409,7 +409,7 @@ public class BaseDao {
         try {
             return db.insertForGeneratedKey(data);
         } catch (Exception e) {
-            throw new RuntimeException("insertExt执行失败: " + data.getTableName(), e);
+            throw new RuntimeException("insertExt执行失败: " + data.getTableName() + " | " + e.getMessage(), e);
         }
     }
 
@@ -419,7 +419,7 @@ public class BaseDao {
         try {
             return db.execute(sql, param);
         } catch (Exception e) {
-            throw new RuntimeException("execSql执行失败: " + sql, e);
+            throw new RuntimeException("execSql执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
     //功能execSql 一样 主要是兼容老项目
@@ -428,7 +428,7 @@ public class BaseDao {
         try {
             return db.execute(sql, param);
         } catch (Exception e) {
-            throw new RuntimeException("execSql执行失败: " + sql, e);
+            throw new RuntimeException("execSql执行失败: " + sql + " | " + e.getMessage(), e);
         }
     }
 
@@ -441,7 +441,7 @@ public class BaseDao {
         try {
             db.commit();
         } catch (Exception e) {
-            throw new RuntimeException("commit执行失败", e);
+            throw new RuntimeException("commit执行失败: " + e.getMessage(), e);
         }
     }
 
@@ -451,7 +451,7 @@ public class BaseDao {
         try {
             db.rollback();
         } catch (Exception e) {
-            throw new RuntimeException("rollback执行失败", e);
+            throw new RuntimeException("rollback执行失败: " + e.getMessage(), e);
         }
     }
 
@@ -461,7 +461,7 @@ public class BaseDao {
         try {
             db.end();
         } catch (Exception e) {
-            throw new RuntimeException("end执行失败", e);
+            throw new RuntimeException("end执行失败: " + e.getMessage(), e);
         }
     }
 
